@@ -1,0 +1,28 @@
+{
+  "name": "e2c-app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@google/genai": "^1.30.0",
+    "vue": "^3.5.24",
+    "vue-json-pretty": "^2.6.0"
+  },
+  "devDependencies": {
+    "@iconify/json": "^2.2.410",
+    "@iconify/tailwind4": "^1.1.0",
+    "@tailwindcss/vite": "^4.1.17",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "autoprefixer": "^10.4.22",
+    "flyonui": "^2.4.1",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.17",
+    "vite": "^7.2.4",
+    "vue-flatpickr-component": "^12.0.0"
+  }
+}
