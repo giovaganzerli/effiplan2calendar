@@ -39,11 +39,17 @@
             <!-- UTENTE NON LOGGATO -->
             <div v-else>
                 <p class="mb-2"><b>Your account:</b></p>
+                <router-link
+                    to="/request-access"
+                    class="w-full btn btn-warning p-3 rounded mb-2"
+                >
+                    1. Request Access
+                </router-link>
                 <button
                     @click="loginManual"
                     class="w-full btn btn-primary p-3 rounded"
                 >
-                    Login with Google
+                    2. Login with Google
                 </button>
             </div>
 
