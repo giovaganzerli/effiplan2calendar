@@ -1,4 +1,5 @@
-const API_ENDPOINT = "http://localhost:3001";
+//const API_ENDPOINT = "http://localhost:8787";
+const API_ENDPOINT = "https://e2c-worker.giovaganzerli.workers.dev";
 
 async function askToIA(file, prompt = "") {
     const form = new FormData();
