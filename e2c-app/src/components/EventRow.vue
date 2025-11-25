@@ -84,7 +84,8 @@ const flatPickrConfig = {
             noCalendar: true,
             allowInput: true,
             time_24hr: true,
-            clickOpens: false
+            clickOpens: false,
+            disableMobile: true
         },
         end: {
             altFormat: 'H:i',
@@ -94,7 +95,8 @@ const flatPickrConfig = {
             noCalendar: true,
             allowInput: true,
             time_24hr: true,
-            clickOpens: false
+            clickOpens: false,
+            disableMobile: true
         }
     }
 }

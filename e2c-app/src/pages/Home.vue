@@ -112,7 +112,7 @@
         </div>
 
         <!-- STEP 3 -->
-        <div v-if="formData.step===3" class="space-y-4 mb-[60px]">
+        <div v-if="formData.step===3" class="space-y-4 mb-[90px]">
 
             <div v-if="formData.file.obj" class="w-full border-dashed border-2 border-gray-600 rounded-2xl p-4 text-center bg-gray-800">
                 <img :src="formData.file.preview" class="max-h-[150px] inline-block" />
