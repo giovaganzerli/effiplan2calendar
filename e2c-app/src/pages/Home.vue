@@ -73,7 +73,7 @@
                 <select
                     id="select-file_input-capture"
                     class="select"
-                    v-model="appSettings.FILE_CAPTURE"
+                    v-model="formData.file.source"
                     aria-label="floating label">
                     <option value="">Select from gallery</option>
                     <option value="enviroment">Capture with camera</option>
@@ -82,7 +82,7 @@
             </div>
 
             <input
-                v-if="appSettings.FILE_CAPTURE==='enviroment'"
+                v-if="formData.file.source==='enviroment'"
                 class="input"
                 type="file"
                 accept="image/*"
@@ -217,8 +217,7 @@ const appSettings = {
         { label: '1h', value: 60 },
         { label: '4h', value: 240 },
         { label: '1g', value: 1440 }
-    ],
-    FILE_CAPTURE: ''
+    ]
 };
 
 const formData = ref({
@@ -232,7 +231,8 @@ const formData = ref({
     },
     file: {
         obj: null,
-        preview: null
+        preview: null,
+        source: ''
     },
     processing: {
         file: false,
@@ -321,7 +321,8 @@ function initData(type = []) {
     if(type.includes('file') || type.includes('all')) {
         formData.value.file = {
             obj: null,
-            preview: null
+            preview: null,
+            source: ''
         };
     }
     if(type.includes('processing') || type.includes('all')) {
