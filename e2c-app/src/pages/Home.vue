@@ -67,9 +67,30 @@
 
         <!-- STEP 2 -->
         <div v-if="formData.step===2" class="space-y-4">
-            <p class="mb-2"><b>Upload/Take a picture:</b></p>
+            <p class="mb-5"><b>Upload/Take a picture:</b></p>
+
+            <div class="select-floating">
+                <select
+                    id="select-file_input-capture"
+                    class="select"
+                    v-model="appSettings.FILE_CAPTURE"
+                    aria-label="floating label">
+                    <option value="">Select from gallery</option>
+                    <option value="enviroment">Capture with camera</option>
+                </select>
+                <label class="select-floating-label" for="select-file_input-capture">From where you want upload?</label>
+            </div>
 
             <input
+                v-if="appSettings.FILE_CAPTURE==='enviroment'"
+                class="input"
+                type="file"
+                accept="image/*"
+                capture="environment"
+                aria-label="file-input"
+                @change="handleFile" />
+            <input
+                v-else
                 class="input"
                 type="file"
                 accept="image/*"
@@ -196,7 +217,8 @@ const appSettings = {
         { label: '1h', value: 60 },
         { label: '4h', value: 240 },
         { label: '1g', value: 1440 }
-    ]
+    ],
+    FILE_CAPTURE: ''
 };
 
 const formData = ref({
