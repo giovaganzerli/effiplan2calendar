@@ -73,7 +73,6 @@
                 class="input"
                 type="file"
                 accept="image/*"
-                capture="environment"
                 aria-label="file-input"
                 @change="handleFile" />
 
