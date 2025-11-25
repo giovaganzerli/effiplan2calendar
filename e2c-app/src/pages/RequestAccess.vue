@@ -1,7 +1,7 @@
 <template>
     <div class="p-4 space-y-6">
 
-        <h1 class="text-2xl text-[9vw] text-center"><router-link to="/"><b>Effiplan2Calendar</b></router-link></h1>
+        <h1 class="text-2xl sm:text-[50px] max-sm:text-[9vw] text-center"><router-link to="/"><b>Effiplan2Calendar</b></router-link></h1>
         <hr>
 
         <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfm3sEhcQIBRbXKNaEcWG0N0LhQNFaHJSfu7d7Wek1qknu6JQ/viewform?embedded=true" width="100%" height="500px" frameborder="0" marginheight="0" marginwidth="0">Caricamento…</iframe>

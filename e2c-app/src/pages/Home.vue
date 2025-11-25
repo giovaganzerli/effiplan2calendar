@@ -1,7 +1,7 @@
 <template>
     <div class="p-4 space-y-6">
 
-        <h1 class="text-2xl text-[9vw] text-center"><b>Effiplan2Calendar</b></h1>
+        <h1 class="text-2xl sm:text-[50px] max-sm:text-[9vw] text-center"><b>Effiplan2Calendar</b></h1>
         <hr>
 
         <!-- Step indicators -->
@@ -53,7 +53,7 @@
                 </button>
             </div>
 
-            <div class="fixed w-full bottom-0 left-0 p-4 bg-black">
+            <div class="fixed w-full max-w-[550px] left-[50%] translate-x-[-50%] bottom-0 left-0 p-4 bg-black">
                 <button
                     class="w-full btn btn-success p-3 rounded"
                     :disabled="!formData.calendar.id"
@@ -101,10 +101,11 @@
                 <img :src="formData.file.preview" class="max-h-[150px] inline-block" />
             </div>
 
-            <div class="fixed w-full bottom-0 left-0 p-4 bg-black">
+            <div class="fixed w-full max-w-[550px] left-[50%] translate-x-[-50%] bottom-0 left-0 p-4 bg-black">
                 <button
                     class="w-full btn btn-success p-3 rounded"
                     @click="goToStep(3)"
+                    :disabled="!formData.file.obj"
                 >
                     Next >
                 </button>
@@ -138,7 +139,7 @@
                 />
             </div>
 
-            <div class="fixed w-full bottom-0 left-0 p-4 bg-black">
+            <div class="fixed w-full max-w-[550px] left-[50%] translate-x-[-50%] bottom-0 left-0 p-4 bg-black">
                 <div class="grid grid-cols-2 gap-2">
                     <button class="btn btn-primary col-span-1 py-2 rounded"
                             @click="addEvent"
@@ -171,7 +172,7 @@
                     <vue-json-pretty :data="formData.created.error"/>
                 </div>
 
-                <div class="fixed w-full bottom-0 left-0 p-4 bg-black">
+                <div class="fixed w-full max-w-[550px] left-[50%] translate-x-[-50%] bottom-0 left-0 p-4 bg-black">
                     <div class="grid grid-cols-2 gap-2">
                         <button class="btn btn-success col-span-2 py-2 rounded"
                                 @click="goToStep(2, true)">
