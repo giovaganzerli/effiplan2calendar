@@ -6,9 +6,9 @@
 
         <!-- Step indicators -->
         <div class="flex justify-between text-sm text-gray-600">
-            <span class="cursor-pointer hover:underline" :class="{'font-bold text-primary underline': formData.step === 1}" @click="goToStep(1)">Login</span> -
-            <span class="cursor-pointer hover:underline" :class="{'font-bold text-primary underline': formData.step === 2}" @click="(formData.step > 2 && formData.step < 4) ? goToStep(2) : false">Upload</span> -
-            <span class="cursor-pointer hover:underline" :class="{'font-bold text-primary underline': formData.step === 3}" @click="(formData.step > 3 && formData.step < 4) ? goToStep(3) : false">Events</span> -
+            <span class="cursor-pointer hover:underline" :class="{'font-bold text-primary underline': formData.step === 1}" @click="goToStep(1)">Accedi</span> -
+            <span class="cursor-pointer hover:underline" :class="{'font-bold text-primary underline': formData.step === 2}" @click="(formData.step > 2 && formData.step < 4) ? goToStep(2) : false">Carica</span> -
+            <span class="cursor-pointer hover:underline" :class="{'font-bold text-primary underline': formData.step === 3}" @click="(formData.step > 3 && formData.step < 4) ? goToStep(3) : false">Analizza</span> -
             <span class="cursor-pointer hover:underline" :class="{'font-bold text-primary underline': formData.step === 4}">Sync</span>
         </div>
 
@@ -17,7 +17,7 @@
 
             <!-- UTENTE LOGGATO -->
             <div v-if="formData.user" class="space-y-4">
-                <p class="mb-2"><b>Your Google Account:</b> (<button class="text-error hover:underline" @click="logout">Logout?</button>)</p>
+                <p class="mb-2"><b>Il tuo account:</b> (<button class="text-error hover:underline" @click="logout">Logout?</button>)</p>
                 <div class="flex items-center gap-3 rounded p-3 shadow">
                     <img :src="formData.user.picture" class="w-10 h-10 rounded-full" />
                     <div>
@@ -31,21 +31,30 @@
                     @on-selected="onCalendarSelected"
                 />
 
-                <div class="w-full border-2 border-gray-600 rounded-2xl p-4 bg-gray-800">
+                <div class="w-full text-xs border-2 border-gray-600 rounded-2xl p-4 bg-gray-800">
                     <p v-for="(log, i) in formData.calendar.logs" :key="'log-'+ i">{{ log }}</p>
                 </div>
             </div>
 
             <!-- UTENTE NON LOGGATO -->
             <div v-else>
-                <p class="mb-2"><b>Your account:</b></p>
+                <p class="mb-2"><b>Il tuo account:</b></p>
                 <button
                     @click="loginManual"
                     class="w-full btn btn-primary p-3 rounded"
                 >
-                    Login with Google
+                    Accedi con Google
                 </button>
                 <p class="text-xs mt-2 text-gray-500"><i>Non utilizzare il tuo account decathlon! <br>Utilizza un accout Google personale.</i></p>
+
+                <hr class="mt-5 mb-3 border-dashed border-[0.5px] border-gray-500">
+                <p class="mb-3 text-gray-500"><b>Come funziona?</b></p>
+                <ul class="text-xs list-disc list-inside indent-4 text-gray-500">
+                    <li>Collega il tuo account Google personale</li>
+                    <li>Carica uno screen del tuo planning Effiplan</li>
+                    <li>Controlla gli eventi riconosciuti dall'IA</li>
+                    <li>Conferma e il gioco è fatto!</li>
+                </ul>
             </div>
 
             <div class="fixed w-full max-w-[550px] left-[50%] translate-x-[-50%] bottom-0 left-0 p-4 bg-black">
@@ -54,7 +63,7 @@
                     :disabled="!formData.calendar.id"
                     @click="goToStep(2)"
                 >
-                    Next >
+                    Iniziamo >
                 </button>
             </div>
 
@@ -62,7 +71,7 @@
 
         <!-- STEP 2 -->
         <div v-if="formData.step===2" class="space-y-4">
-            <p class="mb-5"><b>Upload/Take a picture:</b></p>
+            <p class="mb-5"><b>Carica/Scatta uno screenshot:</b></p>
 
             <div class="select-floating">
                 <select
@@ -70,10 +79,10 @@
                     class="select"
                     v-model="formData.file.source"
                     aria-label="floating label">
-                    <option value="">Select from gallery</option>
-                    <option value="enviroment">Capture with camera</option>
+                    <option value="">Seleziona dalla galleria</option>
+                    <option value="enviroment">Scatta una foto</option>
                 </select>
-                <label class="select-floating-label" for="select-file_input-capture">From where you want upload?</label>
+                <label class="select-floating-label" for="select-file_input-capture">Seleziona la sorgente</label>
             </div>
 
             <input
@@ -92,8 +101,11 @@
                 aria-label="file-input"
                 @change="handleFile" />
 
-            <p v-if="formData.file.obj" class="mt-3 mb-3"><b>Current picture:</b></p>
-            <p v-else class="mt-3 mb-3"><b>Example picture:</b></p>
+            <p v-if="formData.file.obj" class="mt-3 mb-3"><b>Immagine corrente:</b></p>
+            <div v-else>
+                <p class="mt-3"><b>Immagine di esempio:</b></p>
+                <p class="text-xs text-gray-500">Carica uno screenshot come quello di esempio per ottenere un risultato migliore.</p>
+            </div>
 
             <div class="w-full border-dashed border-2 border-gray-600 rounded-2xl p-4 text-center bg-gray-800">
                 <img v-if="formData.file.obj" :src="formData.file.preview" class="max-h-[150px] inline-block" />
@@ -106,7 +118,7 @@
                     @click="goToStep(3)"
                     :disabled="!formData.file.obj"
                 >
-                    Next >
+                    Analizza immagine!
                 </button>
             </div>
         </div>
@@ -118,7 +130,9 @@
                 <img :src="formData.file.preview" class="max-h-[150px] inline-block" />
             </div>
 
-            <div v-if="formData.processing.file">- ANALYZING IMAGE...</div>
+            <div v-if="formData.processing.file" class="w-full text-xs border-2 border-gray-600 rounded-2xl p-4 bg-gray-800">
+                <p v-for="(log, i) in fakeAnalyzingLogs" :key="'log-'+ i">{{ log }}</p>
+            </div>
 
             <div v-else>
                 <hr class="mb-3 border-dashed border-[0.5px] border-gray-500">
@@ -126,7 +140,7 @@
                     <select class="select select-xs max-w-sm" v-model="formData.calendar.reminders">
                         <option v-for="(opt, i) in appSettings.CALENDAR_REMINDER" :key="'remind-'+ i" :value="opt.value" :selected="i===0">{{ opt.label }}</option>
                     </select>
-                    <label class="select-floating-label">Events Notification</label>
+                    <label class="select-floating-label">Notifiche degli eventi</label>
                 </div>
                 <hr class="mt-3 border-dashed border-[0.5px] border-gray-500">
 
@@ -143,7 +157,7 @@
                     <button class="btn btn-primary col-span-1 py-2 rounded"
                             @click="addEvent"
                             :disabled="formData.processing.file">
-                        + Add Events
+                        + Aggiungi
                     </button>
 
                     <button class="btn btn-success col-span-1 py-3 rounded"
@@ -159,14 +173,14 @@
         <div v-if="formData.step===4">
 
             <br>
-            <div v-if="formData.processing.events" class="text-center">Syncing Events...</div>
+            <div v-if="formData.processing.events" class="text-center">SINCRONIZO EVENTI...</div>
 
             <div v-else class="space-y-6">
-                <p class="text-success"><b>Imported Events:</b> {{formData.created.success.length}}</p>
+                <p class="text-success"><b>Eventi importati:</b> {{formData.created.success.length}}</p>
                 <div class="w-full max-h-[20vh] overflow-y-auto border-2 border-gray-600 rounded-2xl p-4 bg-gray-800">
                     <vue-json-pretty :data="formData.created.success"/>
                 </div>
-                <p class="text-error"><b>With Error:</b> {{formData.created.error.length}}</p>
+                <p class="text-error"><b>Con errori:</b> {{formData.created.error.length}}</p>
                 <div class="w-full max-h-[20vh] overflow-y-auto border-2 border-gray-600 rounded-2xl p-4 bg-gray-800">
                     <vue-json-pretty :data="formData.created.error"/>
                 </div>
@@ -176,7 +190,7 @@
                         <button class="btn btn-success col-span-2 py-2 rounded"
                                 @click="goToStep(2, true)">
                             <span class="icon-[solar--refresh-linear] text-base-content/80 my-auto me-1 size-4 shrink-0"></span>
-                            New Screenshot!
+                            Carica Nuovo Screenshot!
                         </button>
                     </div>
                 </div>
@@ -212,7 +226,7 @@ const appSettings = {
     CALENDAR_NAME: 'EFFIPLAN',
     CALENDAR_REMINDER: [
         { label: 'Default', value: 'default' },
-        { label: 'None', value: 'none' },
+        { label: 'Nessuna', value: 'none' },
         { label: '30min', value: 30 },
         { label: '1h', value: 60 },
         { label: '4h', value: 240 },
@@ -245,6 +259,8 @@ const formData = ref({
     }
 });
 
+const fakeAnalyzingLogs = ref([]);
+
 onMounted(async () => {
     await initGoogle("584576150276-o3ruk12imhutt12c83q2gv5e54vn7690.apps.googleusercontent.com");
 });
@@ -275,7 +291,7 @@ function logout() {
 
 async function initUserCalendar() {
 
-    formData.value.calendar.logs.push('- Searching for "EFFIPLAN" calendar...');
+    formData.value.calendar.logs.push('- Cerco calendario "EFFIPLAN"...');
 
     const token = getToken();
     const calendars = await getUserCalendars();
@@ -283,22 +299,23 @@ async function initUserCalendar() {
 
     if(!calendar.length) {
 
-        formData.value.calendar.logs.push('- No "EFFIPLAN" calendar found :(');
-        formData.value.calendar.logs.push('- Creating calendar...');
+        formData.value.calendar.logs.push('- Nessun calendario "EFFIPLAN" trovato :(');
+        formData.value.calendar.logs.push('- Creo il calendario...');
 
         calendar = await createUserCalendar(appSettings.CALENDAR_NAME);
         formData.value.calendar.id = calendar.id;
         formData.value.calendar.obj = calendar;
 
-        formData.value.calendar.logs.push('- Calendar created succesfully!');
-        formData.value.calendar.logs.push('- Well done :)');
+        formData.value.calendar.logs.push('- Calendario creato con successo!');
+        formData.value.calendar.logs.push('- Ben fatto :)');
 
         setTimeout(() => goToStep(2), 500);
 
     } else {
 
-        formData.value.calendar.logs.push('- "EFFIPLAN" calendar found!');
-        formData.value.calendar.logs.push('- Well done :)');
+        formData.value.calendar.logs.push('- Calendario "EFFIPLAN" trovato!');
+        formData.value.calendar.logs.push('- Seleziono il calendario...');
+        formData.value.calendar.logs.push('- Ben fatto :)');
 
         formData.value.calendar.id = calendar[0].id;
         formData.value.calendar.obj = calendar[0];
@@ -363,6 +380,15 @@ function handleFile(e) {
 
 async function processingFile() {
     formData.value.processing.file = true;
+
+    fakeAnalyzingLogs.value.push('- Invio l\'immagine...');
+    setTimeout(() => { fakeAnalyzingLogs.value.push('- Immagine ricevuta dal server.'); }, 3000);
+    setTimeout(() => { fakeAnalyzingLogs.value.push('- Analisi in corso...'); }, 3800);
+    setTimeout(() => { fakeAnalyzingLogs.value.push('- Cercando gli eventi...'); }, 7000);
+    setTimeout(() => { fakeAnalyzingLogs.value.push('- Eventi trovati!'); }, 12000);
+    setTimeout(() => { fakeAnalyzingLogs.value.push('- Creando l\'array...'); }, 13500);
+    setTimeout(() => { fakeAnalyzingLogs.value.push('- Ci siamo quasi, ultimi ritocchi...'); }, 18000);
+
     formData.value.events = await parseImage(formData.value.file.obj);
     formData.value.processing.file = false;
 }
@@ -377,8 +403,7 @@ function addEvent() {
         title: "V-GENERAL",
         date: "",
         startTime: "",
-        endTime: "",
-        enabled: true
+        endTime: ""
     });
 }
 
@@ -405,8 +430,6 @@ async function syncEvents() {
     const calId = calendar.id;
 
     for (const ev of formData.value.events) {
-        if (!ev.enabled) continue; // skip non selezionati
-
         try {
             const googleEvent = buildGoogleEvent(ev);
 

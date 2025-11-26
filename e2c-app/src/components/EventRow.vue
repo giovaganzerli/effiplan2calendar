@@ -42,13 +42,7 @@
         </div>
 
         <div class="flex justify-between items-center">
-
-            <div class="flex items-center gap-1">
-                <input type="checkbox" class="checkbox checkbox-primary" v-model="local.enabled"/>
-                <label class="label-text text-base">Import</label>
-            </div>
-
-            <button class="btn btn-error" @click="$emit('delete')">Delete</button>
+            <button class="btn btn-error" @click="$emit('delete')"><span class="icon-[solar--trash-bin-minimalistic-linear] text-base-content/80 my-auto me-1 size-4 shrink-0"></span></button>
         </div>
 
     </div>
