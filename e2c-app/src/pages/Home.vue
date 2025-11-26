@@ -39,18 +39,13 @@
             <!-- UTENTE NON LOGGATO -->
             <div v-else>
                 <p class="mb-2"><b>Your account:</b></p>
-                <router-link
-                    to="/request-access"
-                    class="w-full btn btn-warning p-3 rounded mb-2"
-                >
-                    1. Request Access
-                </router-link>
                 <button
                     @click="loginManual"
                     class="w-full btn btn-primary p-3 rounded"
                 >
-                    2. Login with Google
+                    Login with Google
                 </button>
+                <p class="text-xs mt-2 text-gray-500"><i>Non utilizzare il tuo account decathlon! <br>Utilizza un accout Google personale.</i></p>
             </div>
 
             <div class="fixed w-full max-w-[550px] left-[50%] translate-x-[-50%] bottom-0 left-0 p-4 bg-black">
@@ -97,8 +92,12 @@
                 aria-label="file-input"
                 @change="handleFile" />
 
-            <div v-if="formData.file.obj" class="w-full border-dashed border-2 border-gray-600 rounded-2xl p-4 text-center bg-gray-800">
-                <img :src="formData.file.preview" class="max-h-[150px] inline-block" />
+            <p v-if="formData.file.obj" class="mt-3 mb-3"><b>Current picture:</b></p>
+            <p v-else class="mt-3 mb-3"><b>Example picture:</b></p>
+
+            <div class="w-full border-dashed border-2 border-gray-600 rounded-2xl p-4 text-center bg-gray-800">
+                <img v-if="formData.file.obj" :src="formData.file.preview" class="max-h-[150px] inline-block" />
+                <img v-else src="../assets/images/example_image.jpeg" class="max-h-[150px] inline-block" />
             </div>
 
             <div class="fixed w-full max-w-[550px] left-[50%] translate-x-[-50%] bottom-0 left-0 p-4 bg-black">
