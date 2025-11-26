@@ -65,6 +65,10 @@
                 >
                     Iniziamo >
                 </button>
+                <p class="mt-2 text-xs text-gray-500">
+                    <router-link to="/privacy-policy">Privacy Policy</router-link> •
+                    <router-link to="/terms-of-service">Termini di utilizzo</router-link>
+                </p>
             </div>
 
         </div>
