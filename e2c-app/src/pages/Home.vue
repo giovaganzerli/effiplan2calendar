@@ -49,12 +49,54 @@
 
                 <hr class="mt-5 mb-3 border-dashed border-[0.5px] border-gray-500">
                 <p class="mb-3 text-gray-500"><b>Come funziona?</b></p>
-                <ul class="text-xs list-disc list-inside indent-4 text-gray-500">
-                    <li>Collega il tuo account Google personale</li>
-                    <li>Carica uno screen del tuo planning Effiplan</li>
-                    <li>Controlla gli eventi riconosciuti dall'IA</li>
-                    <li>Conferma e il gioco è fatto!</li>
-                </ul>
+
+                <div
+                    id="multi-slide"
+                    data-carousel='{ "loadingClasses": "opacity-0", "slidesQty": { "xs": 3, "lg": 3 } }'
+                    class="relative w-full"
+                >
+                    <div class="carousel-controls absolute top-[-33px] right-0">
+                        <!-- Previous Slide -->
+                        <button type="button" class="carousel-prev relative">
+                            <span class="icon-[tabler--chevron-left] size-5 cursor-pointer"></span>
+                            <span class="sr-only">Previous</span>
+                        </button>
+                        <!-- Next Slide -->
+                        <button type="button" class="carousel-next relative">
+                            <span class="icon-[tabler--chevron-right] size-5"></span>
+                            <span class="sr-only">Next</span>
+                        </button>
+                    </div>
+                    <div class="carousel h-80">
+                        <div class="carousel-body  h-full opacity-0">
+                            <!-- Slide 1 -->
+                            <div class="carousel-slide">
+                                <img src="../assets/images/screen-1.png" style="height: 150px" />
+                                <p class="mt-2 text-xs text-gray-500">Collega il tuo account Google personale</p>
+                            </div>
+                            <!-- Slide 2 -->
+                            <div class="carousel-slide">
+                                <img src="../assets/images/screen-2.png" style="height: 150px" />
+                                <p class="mt-2 text-xs text-gray-500">Carica uno screen del tuo planning Effiplan</p>
+                            </div>
+                            <!-- Slide 3 -->
+                            <div class="carousel-slide">
+                                <img src="../assets/images/screen-3.png" style="height: 150px" />
+                                <p class="mt-2 text-xs text-gray-500">Controlla gli eventi riconosciuti dall'IA</p>
+                            </div>
+                            <!-- Slide 4 -->
+                            <div class="carousel-slide">
+                                <img src="../assets/images/screen-4.png" style="height: 150px" />
+                                <p class="mt-2 text-xs text-gray-500">Conferma e controlla che non ci siano stati errori</p>
+                            </div>
+                            <!-- Slide 5 -->
+                            <div class="carousel-slide">
+                                <img src="../assets/images/screen-5.png" style="height: 150px" />
+                                <p class="mt-2 text-xs text-gray-500">Apri Google Calendar per vedere la magia</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="fixed w-full max-w-[550px] left-[50%] translate-x-[-50%] bottom-0 left-0 p-4 bg-black">
