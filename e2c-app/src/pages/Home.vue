@@ -31,7 +31,7 @@
                     @on-selected="onCalendarSelected"
                 />
 
-                <div class="w-full text-xs border-2 border-gray-600 rounded-2xl p-4 bg-gray-800">
+                <div v-if="formData.calendar.logs.length" class="w-full text-xs border-2 border-gray-600 rounded-2xl p-4 bg-gray-800">
                     <p v-for="(log, i) in formData.calendar.logs" :key="'log-'+ i">{{ log }}</p>
                 </div>
             </div>
@@ -337,20 +337,26 @@ async function initUserCalendar() {
         formData.value.calendar.obj = calendar;
 
         formData.value.calendar.logs.push('- Calendario creato con successo!');
-        formData.value.calendar.logs.push('- Ben fatto :)');
+        setTimeout(() => formData.value.calendar.logs.push('- Ben fatto :)'), 500);
 
-        setTimeout(() => goToStep(2), 500);
+        setTimeout(() => {
+            formData.value.calendar.logs = [];
+            goToStep(2)
+        }, 1000);
 
     } else {
 
         formData.value.calendar.logs.push('- Calendario "EFFIPLAN" trovato!');
-        formData.value.calendar.logs.push('- Seleziono il calendario...');
-        formData.value.calendar.logs.push('- Ben fatto :)');
+        setTimeout( () => formData.value.calendar.logs.push('- Seleziono il calendario...'), 500);
+        setTimeout( () => formData.value.calendar.logs.push('- Ben fatto :)'), 1000);
 
         formData.value.calendar.id = calendar[0].id;
         formData.value.calendar.obj = calendar[0];
 
-        setTimeout(() => goToStep(2), 500);
+        setTimeout(() => {
+            formData.value.calendar.logs = [];
+            goToStep(2)
+        }, 1500);
     }
 }
 
@@ -412,15 +418,20 @@ async function processingFile() {
     formData.value.processing.file = true;
 
     fakeAnalyzingLogs.value.push('- Invio l\'immagine...');
-    setTimeout(() => { fakeAnalyzingLogs.value.push('- Immagine ricevuta dal server.'); }, 3000);
-    setTimeout(() => { fakeAnalyzingLogs.value.push('- Analisi in corso...'); }, 3800);
-    setTimeout(() => { fakeAnalyzingLogs.value.push('- Cercando gli eventi...'); }, 7000);
-    setTimeout(() => { fakeAnalyzingLogs.value.push('- Eventi trovati!'); }, 12000);
-    setTimeout(() => { fakeAnalyzingLogs.value.push('- Creando l\'array...'); }, 13500);
-    setTimeout(() => { fakeAnalyzingLogs.value.push('- Ci siamo quasi, ultimi ritocchi...'); }, 18000);
+    setTimeout(() => { fakeAnalyzingLogs.value.push('- Immagine ricevuta dal server.'); }, 1000);
+    setTimeout(() => { fakeAnalyzingLogs.value.push('- Analisi in corso...'); }, 1500);
+    setTimeout(() => { fakeAnalyzingLogs.value.push('- Cercando gli eventi...'); }, 2000);
 
     formData.value.events = await parseImage(formData.value.file.obj);
-    formData.value.processing.file = false;
+
+    fakeAnalyzingLogs.value.push('- Eventi trovati!');;
+    setTimeout(() => { fakeAnalyzingLogs.value.push('- Creando l\'array...'); }, 500);
+    setTimeout(() => { fakeAnalyzingLogs.value.push('- Ci siamo quasi, ultimi ritocchi...'); }, 1000);
+
+    setTimeout(() => {
+        fakeAnalyzingLogs.value = [];
+        formData.value.processing.file = false;
+    }, 1500);
 }
 
 function removeEvent(i) {
