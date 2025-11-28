@@ -1,5 +1,5 @@
 <template>
-    <div class="p-4 space-y-6">
+    <div class="p-4 space-y-6 mb-[60px]">
 
         <h1 class="text-2xl sm:text-[50px] max-sm:text-[9vw] text-center"><b>Effiplan2Calendar</b></h1>
         <hr>
@@ -51,49 +51,33 @@
                 <p class="mb-3 text-gray-500"><b>Come funziona?</b></p>
 
                 <div
-                    id="multi-slide"
-                    data-carousel='{ "loadingClasses": "opacity-0", "slidesQty": { "xs": 3, "lg": 3 } }'
-                    class="relative w-full"
+                    class="relative w-full overflow-x-scroll snap-x snap-mandatory scroller"
                 >
-                    <div class="carousel-controls absolute top-[-33px] right-0">
-                        <!-- Previous Slide -->
-                        <button type="button" class="carousel-prev relative">
-                            <span class="icon-[tabler--chevron-left] size-5 cursor-pointer"></span>
-                            <span class="sr-only">Previous</span>
-                        </button>
-                        <!-- Next Slide -->
-                        <button type="button" class="carousel-next relative">
-                            <span class="icon-[tabler--chevron-right] size-5"></span>
-                            <span class="sr-only">Next</span>
-                        </button>
-                    </div>
-                    <div class="carousel h-80">
-                        <div class="carousel-body h-full">
-                            <!-- Slide 1 -->
-                            <div class="carousel-slide" style="opacity: 1">
-                                <img src="../assets/images/screen-1.png" style="height: 150px" />
-                                <p class="mt-2 text-xs text-gray-500">Collega il tuo account Google personale</p>
-                            </div>
-                            <!-- Slide 2 -->
-                            <div class="carousel-slide" style="opacity: 1">
-                                <img src="../assets/images/screen-2.png" style="height: 150px" />
-                                <p class="mt-2 text-xs text-gray-500">Carica uno screen del tuo planning Effiplan</p>
-                            </div>
-                            <!-- Slide 3 -->
-                            <div class="carousel-slide" style="opacity: 1">
-                                <img src="../assets/images/screen-3.png" style="height: 150px" />
-                                <p class="mt-2 text-xs text-gray-500">Controlla gli eventi riconosciuti dall'IA</p>
-                            </div>
-                            <!-- Slide 4 -->
-                            <div class="carousel-slide" style="opacity: 1">
-                                <img src="../assets/images/screen-4.png" style="height: 150px" />
-                                <p class="mt-2 text-xs text-gray-500">Conferma e controlla che non ci siano stati errori</p>
-                            </div>
-                            <!-- Slide 5 -->
-                            <div class="carousel-slide" style="opacity: 1">
-                                <img src="../assets/images/screen-5.png" style="height: 150px" />
-                                <p class="mt-2 text-xs text-gray-500">Apri Google Calendar per vedere la magia</p>
-                            </div>
+                    <div class="flex flex-nowrap items-start mb-3">
+                        <!-- Slide 1 -->
+                        <div class="mr-4 flex-none snap-start text-center border-dashed border-2 border-gray-600 rounded-2xl p-2 bg-gray-800">
+                            <img src="../assets/images/screen-1.png" class="h-[150px] w-auto object-scale-down mx-auto" />
+                            <p class="w-[120px] mt-2 text-xs text-gray-500">Collega il tuo account Google personale</p>
+                        </div>
+                        <!-- Slide 2 -->
+                        <div class="mr-4 flex-none snap-start text-center border-dashed border-2 border-gray-600 rounded-2xl p-2 bg-gray-800">
+                            <img src="../assets/images/screen-2.png" class="h-[150px] w-auto object-contain mx-auto" />
+                            <p class="w-[150px] mt-2 text-xs text-gray-500">Carica uno screen del tuo planning Effiplan</p>
+                        </div>
+                        <!-- Slide 3 -->
+                        <div class="mr-4 flex-none snap-start text-center border-dashed border-2 border-gray-600 rounded-2xl p-2 bg-gray-800">
+                            <img src="../assets/images/screen-3.png" class="h-[150px] w-auto object-contain mx-auto" />
+                            <p class="w-[140px] mt-2 text-xs text-gray-500">Controlla gli eventi riconosciuti dall'IA</p>
+                        </div>
+                        <!-- Slide 4 -->
+                        <div class="mr-4 flex-none snap-start text-center border-dashed border-2 border-gray-600 rounded-2xl p-2 bg-gray-800">
+                            <img src="../assets/images/screen-4.png" class="h-[150px] w-auto object-contain mx-auto" />
+                            <p class="w-[150px] mt-2 text-xs text-gray-500">Conferma e controlla che non ci siano stati errori</p>
+                        </div>
+                        <!-- Slide 5 -->
+                        <div class="mr-4 flex-none snap-start text-center border-dashed border-2 border-gray-600 rounded-2xl p-2 bg-gray-800">
+                            <img src="../assets/images/screen-5.png" class="h-[150px] w-auto object-contain mx-auto" />
+                            <p class="w-[130px] mt-2 text-xs text-gray-500">Apri Google Calendar per vedere la magia</p>
                         </div>
                     </div>
                 </div>
