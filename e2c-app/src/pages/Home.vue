@@ -68,29 +68,29 @@
                         </button>
                     </div>
                     <div class="carousel h-80">
-                        <div class="carousel-body  h-full opacity-0">
+                        <div class="carousel-body h-full">
                             <!-- Slide 1 -->
-                            <div class="carousel-slide">
+                            <div class="carousel-slide" style="opacity: 1">
                                 <img src="../assets/images/screen-1.png" style="height: 150px" />
                                 <p class="mt-2 text-xs text-gray-500">Collega il tuo account Google personale</p>
                             </div>
                             <!-- Slide 2 -->
-                            <div class="carousel-slide">
+                            <div class="carousel-slide" style="opacity: 1">
                                 <img src="../assets/images/screen-2.png" style="height: 150px" />
                                 <p class="mt-2 text-xs text-gray-500">Carica uno screen del tuo planning Effiplan</p>
                             </div>
                             <!-- Slide 3 -->
-                            <div class="carousel-slide">
+                            <div class="carousel-slide" style="opacity: 1">
                                 <img src="../assets/images/screen-3.png" style="height: 150px" />
                                 <p class="mt-2 text-xs text-gray-500">Controlla gli eventi riconosciuti dall'IA</p>
                             </div>
                             <!-- Slide 4 -->
-                            <div class="carousel-slide">
+                            <div class="carousel-slide" style="opacity: 1">
                                 <img src="../assets/images/screen-4.png" style="height: 150px" />
                                 <p class="mt-2 text-xs text-gray-500">Conferma e controlla che non ci siano stati errori</p>
                             </div>
                             <!-- Slide 5 -->
-                            <div class="carousel-slide">
+                            <div class="carousel-slide" style="opacity: 1">
                                 <img src="../assets/images/screen-5.png" style="height: 150px" />
                                 <p class="mt-2 text-xs text-gray-500">Apri Google Calendar per vedere la magia</p>
                             </div>
