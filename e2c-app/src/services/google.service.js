@@ -28,7 +28,7 @@ function initTokenClient() {
     if (!tokenClient) {
         tokenClient = google.accounts.oauth2.initTokenClient({
             client_id: googleClientId,
-            scope: "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
+            scope: "https://www.googleapis.com/auth/calendar.app.created https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
             callback: (response) => {
                 accessToken = response.access_token;
                 localStorage.setItem("googleLogged", "1");
