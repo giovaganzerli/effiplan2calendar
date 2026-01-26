@@ -45,7 +45,7 @@
                 >
                     Accedi con Google
                 </button>
-                <p class="text-xs mt-2 text-gray-500"><i>Non utilizzare il tuo account decathlon! <br>Utilizza un accout Google personale.</i></p>
+                <p class="text-xs mt-2 text-gray-500"><i>Non utilizzare il tuo account Decathlon! <br>Utilizza un account Google personale.</i></p>
 
                 <hr class="mt-5 mb-3 border-dashed border-[0.5px] border-gray-500">
                 <p class="mb-3 text-gray-500"><b>Come funziona?</b></p>
