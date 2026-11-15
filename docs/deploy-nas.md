@@ -1,5 +1,14 @@
 # Deploy sul NAS
 
+## URL pubblico
+
+La home principale è `https://share.girovaganzo.bike/decathlon/e2c/`.
+Il gateway pubblico esistente riscrive `/decathlon/e2c` in `/e2c` prima
+di inoltrare a nginx. Il percorso sul disco resta `/var/www/decathlon/e2c`.
+Il workflow verifica l'health check sul nuovo URL pubblico.
+Autorizzare `https://share.girovaganzo.bike` come origine JavaScript in
+Google Cloud (senza `/decathlon/e2c/`).
+
 Il workflow `deploy-nas.yml` parte sui push a `main` o manualmente dallo stesso
 branch. Compila un'immagine amd64 e la trasferisce via SSH nella rete Tailscale:
 non richiede registry né porte pubbliche.

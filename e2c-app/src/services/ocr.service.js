@@ -5,10 +5,18 @@
  *  1. variabile d'ambiente VITE_API_ENDPOINT (file .env.* nella root di e2c-app)
  *  2. stesso dominio dell'app: <BASE_URL>api/ia
  *     - sviluppo: /api/ia
- *     - produzione: /e2c/api/ia  -> nginx -> server Express
+ *     - produzione: /decathlon/e2c/api/ia -> gateway -> server Express
  */
-const API_ENDPOINT =
-    import.meta.env.VITE_API_ENDPOINT || `${import.meta.env.BASE_URL}api/ia`;
+export function getIAEndpoint(baseUrl, apiOrigin = "") {
+    return apiOrigin
+        ? `${apiOrigin.replace(/\/$/, "")}/api/ia`
+        : `${baseUrl}api/ia`;
+}
+
+const API_ENDPOINT = getIAEndpoint(
+    import.meta.env.BASE_URL,
+    import.meta.env.VITE_API_ENDPOINT
+);
 
 /**
  * Ridimensiona l'immagine lato client (canvas) prima dell'upload.
@@ -54,7 +62,7 @@ async function askToIA(file, prompt = "") {
     form.append("file", file);
     form.append("prompt", prompt);
 
-    const response = await fetch(API_ENDPOINT + "/api/ia", {
+    const response = await fetch(API_ENDPOINT, {
         method: "POST",
         body: form,
     });

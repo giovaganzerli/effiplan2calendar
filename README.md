@@ -1,5 +1,16 @@
 # Effiplan2Calendar
 
+## Indirizzo principale
+
+L'app è pubblicata su **https://share.girovaganzo.bike/decathlon/e2c/**.
+Il gateway inoltra `/decathlon/e2c/` al percorso interno `/e2c/` di nginx;
+frontend, router e API usano il nuovo prefisso pubblico. Il codice sul NAS
+rimane in `/var/www/decathlon/e2c/`.
+L'accesso pubblico non richiede Tailscale; il deploy via SSH continua a usarlo.
+In Google Cloud, autorizzare l'origine JavaScript `https://share.girovaganzo.bike`
+(senza percorso). Le descrizioni del dominio Decathlon sotto riportate si
+riferiscono all'origine interna, non all'indirizzo principale pubblico.
+
 Converte gli screenshot del planning Effiplan in eventi su Google Calendar, usando
 l'analisi immagini di Gemini. La web app guida l'utente nell'accesso con Google,
 nell'upload dello screenshot, nella revisione degli eventi estratti e nella

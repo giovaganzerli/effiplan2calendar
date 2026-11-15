@@ -256,7 +256,7 @@ const appSettings = {
     CALENDAR_NAME: 'EFFIPLAN',
     // Client ID OAuth Google. Sostituirlo con quello del proprio progetto
     // Google Cloud (var. d'ambiente VITE_GOOGLE_CLIENT_ID) e aggiungere
-    // l'origine autorizzata (https://decathlon.girovaganzo.bike/e2c).
+    // l'origine autorizzata (https://share.girovaganzo.bike, senza percorso).
     GOOGLE_CLIENT_ID: import.meta.env.VITE_GOOGLE_CLIENT_ID || '584576150276-o3ruk12imhutt12c83q2gv5e54vn7690.apps.googleusercontent.com',
     CALENDAR_REMINDER: [
         { label: 'Default', value: 'default' },
