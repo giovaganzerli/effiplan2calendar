@@ -12,7 +12,7 @@ COPY e2c-app/package.json e2c-app/package-lock.json ./
 RUN npm ci
 
 COPY e2c-app/ ./
-RUN npm run build
+RUN npm run test:pwa
 
 
 # =====================================================================

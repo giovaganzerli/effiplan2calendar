@@ -1,5 +1,16 @@
 # Effiplan2Calendar
 
+## Installazione PWA (Effi2Cal)
+
+Aprire `https://share.girovaganzo.bike/decathlon/e2c/` in Chrome su Android
+e scegliere **Installa app**. Il nome installato è **Effi2Cal** e le icone
+derivano da `e2c-app/public/appicon.png` (192, 512 e Apple touch 180 px).
+Il manifest e il service worker sono generati da `vite-plugin-pwa` con lo
+stesso prefisso di Vite. Solo i file statici sono salvati per l'avvio offline:
+Google login, analisi IA e sincronizzazione Calendar richiedono la rete.
+Gli aggiornamenti si attivano alla chiusura delle finestre precedenti,
+senza ricaricare forzatamente una revisione o sincronizzazione in corso.
+
 ## Indirizzo principale
 
 L'app è pubblicata su **https://share.girovaganzo.bike/decathlon/e2c/**.
