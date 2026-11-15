@@ -15,7 +15,8 @@ L'applicazione gira **autonomamente sul tuo server** (NAS `g96-nas`), servita da
 | **e2c-app** | Front-end Vue 3 + Vite (mobile-first): login Google, caricamento screenshot, revisione eventi, sync su Calendar. |
 | **e2c-server** | Server Express: espone `POST /api/ia` (Gemini) **e** serve il front-end compilato con fallback SPA. È il backend di produzione. |
 | **e2c-worker** | Cloudflare Worker: backend *alternativo*, non più usato dal sito. Tenuto come opzione di sviluppo/emergenza. |
-| **deploy/nas** | Script e compose file usati dal deploy sul NAS. |
+| **bin/** | Script di deploy installati sul NAS (`deploy-nas`, `deploy-nas-ssh`, `deploy-nas-env-set`) e il `docker-compose.yml`. |
+| **docs/deploy-nas.md** | Procedura completa di deploy, con i comandi per configurare GitHub e il NAS. |
 | **Dockerfile** | Multi-stage: build Vite + runtime Node con il front-end compilato. |
 
 ## Architettura di produzione
@@ -108,29 +109,29 @@ e il risultato viene ripulito da eventuali fence markdown prima del parsing.
 
 ## Deploy automatico (GitHub Actions → NAS)
 
-`.github/workflows/deploy.yml` fa tre cose a ogni push su `main`:
+`.github/workflows/deploy-nas.yml` fa tre cose a ogni push su `main`:
 
-1. **build** — compila l'immagine Docker (Vite + server Express) e la esporta.
+1. **build** — compila l'immagine Docker (Vite + server Express) su `linux/amd64`.
 2. **deploy** — il runner entra nella **tailnet Tailscale**, poi:
    - scrive `GEMINI_API_KEY` in `/var/www/decathlon/e2c/.env` (mode 600);
    - invia l'immagine compressa via SSH (stdin) al NAS;
    - il NAS fa `docker load`, estrae il codice in `/var/www/decathlon/e2c/` e riavvia il container;
 3. **health check** — verifica `https://decathlon.girovaganzo.bike/e2c/api/health`.
 
-### Secret GitHub richiesti
+I secret vivono nell'**environment GitHub `nas`**, non a livello di repository.
 
 | Secret | Contenuto |
 |---|---|
-| `NAS_SSH_KEY` | Chiave privata del deploy (già impostata: `~/.ssh/g96-e2c-actions_ed25519`). |
-| `GEMINI_API_KEY` | Chiave API Gemini per il server (già impostata). |
-| `TS_OAUTH_CLIENT_ID` | Tailscale OAuth client id — **da creare**. |
-| `TS_OAUTH_SECRET` | Tailscale OAuth client secret — **da creare**. |
+| `TS_OAUTH_CLIENT_ID` | Tailscale OAuth client id (lo stesso di Dreeve/Wallet). |
+| `TS_OAUTH_SECRET` | Tailscale OAuth client secret. |
+| `NAS_SSH_KEY` | Chiave privata del deploy (`~/.ssh/g96-e2c-actions_ed25519`). |
+| `NAS_SSH_KNOWN_HOSTS` | Chiave host SSH verificata per `100.115.48.28`. |
+| `GEMINI_API_KEY` | Chiave API Gemini per il server. |
 
-> **Da fare:** crea un OAuth client su <https://tailscale.com/s/oauth-clients> con
-> scope `auth_keys` e tag `tag:ci`, poi aggiungi id e secret come secret GitHub.
-> Il nodo creato dal runner è *ephemeral*: sparisce a fine job.
-> In alternativa puoi usare una auth key Tailscale (secret `TS_AUTHKEY`) al posto
-> dei due secret OAuth.
+Procedura completa e comandi di setup: [`docs/deploy-nas.md`](docs/deploy-nas.md).
+
+> **Nota**: il client OAuth Tailscale è condiviso con Dreeve e Wallet, ma i secret
+> GitHub sono **per repository**: gli stessi valori vanno ripetuti anche qui.
 
 ### Perché serve Tailscale
 

@@ -1,8 +1,0 @@
-# Host key del NAS (g96-nas), pinnata per evitare MITM durante il deploy.
-# Generata con: ssh-keyscan -t ed25519 g96-nas
-#
-# "g96-nas" e' il nome MagicDNS della tailnet (quello che risolve il runner
-# dentro Tailscale); l'IP e' il fallback esplicito.
-g96-nas ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAhyAFPS8Yg5hgLy85qMfGoV5Pxc2oQ1PkvJwHQeyMhZ
-100.115.48.28 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAhyAFPS8Yg5hgLy85qMfGoV5Pxc2oQ1PkvJwHQeyMhZ
-g96-nas.local ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAhyAFPS8Yg5hgLy85qMfGoV5Pxc2oQ1PkvJwHQeyMhZ
