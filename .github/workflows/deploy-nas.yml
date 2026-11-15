@@ -78,7 +78,7 @@ jobs:
         with:
           oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
-          tags: tag:github-actions
+          tags: tag:github-deploy
           ping: 100.115.48.28
 
       - name: Configure SSH

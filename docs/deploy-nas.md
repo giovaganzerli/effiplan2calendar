@@ -21,10 +21,14 @@ L'environment GitHub **nas** e i suoi secrets:
 | `GEMINI_API_KEY` | Chiave API Gemini scritta nel `.env` del NAS |
 
 Il client OAuth Tailscale è lo stesso usato per Dreeve e Wallet: si usa con
-permesso di scrittura sulle auth keys e tag `tag:github-actions`. Configurare i
+permesso di scrittura sulle auth keys e tag `tag:github-deploy`. Configurare i
 tag owner e consentire a quel tag **solo TCP 22 verso il NAS** nelle ACL/grants
 della tailnet. Il client OAuth non si può ricavare dalla sessione Tailscale già
 attiva sul NAS.
+
+> I tag richiesti dal workflow devono corrispondere **esattamente** a quelli
+> configurati sull'OAuth client, altrimenti Tailscale risponde
+> `400: requested tags [...] are invalid or not permitted`.
 
 Si usa OpenSSH con chiave dedicata, non la funzione Tailscale SSH.
 
