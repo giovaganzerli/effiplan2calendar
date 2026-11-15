@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "test:pwa": "npm run build && node --test test/*.test.js",
+    "test:e2e": "playwright test",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -16,6 +17,7 @@
   "devDependencies": {
     "@iconify/json": "^2.2.410",
     "@iconify/tailwind4": "^1.1.0",
+    "@playwright/test": "^1.65.1",
     "@tailwindcss/vite": "^4.1.17",
     "@vitejs/plugin-vue": "^6.0.1",
     "autoprefixer": "^10.4.22",

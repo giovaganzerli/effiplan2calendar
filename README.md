@@ -10,6 +10,18 @@ stesso prefisso di Vite. Solo i file statici sono salvati per l'avvio offline:
 Google login, analisi IA e sincronizzazione Calendar richiedono la rete.
 Gli aggiornamenti si attivano alla chiusura delle finestre precedenti,
 senza ricaricare forzatamente una revisione o sincronizzazione in corso.
+Quando c'è una versione in attesa, appare anche **Aggiorna app**: il pulsante
+richiede conferma e non è utilizzabile durante analisi IA o sincronizzazione.
+In fondo alla pagina è indicato il codice della versione per distinguere una
+PWA aggiornata da una copia precedente ancora in memoria.
+
+### Test del flusso Sync nel browser
+
+In `e2c-app`, `npm run test:e2e` prova il sito pubblicato con viewport mobile,
+intercettando tutte le chiamate Google: non crea eventi reali. Richiede Chromium
+di Playwright (`npx playwright install chromium`), oppure `E2C_CHROME_PATH`
+per usare un'installazione locale di Chrome. `E2C_TEST_URL` permette di provare
+una build locale anziché il sito pubblico.
 
 ## Indirizzo principale
 

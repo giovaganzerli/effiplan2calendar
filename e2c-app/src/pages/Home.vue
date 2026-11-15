@@ -231,7 +231,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted, watch } from "vue";
+import { appBusy } from '../services/pwa.service.js';
 import CalendarSelector from "../components/CalendarSelector.vue";
 import EventRow from "../components/EventRow.vue";
 
@@ -294,6 +295,13 @@ const formData = ref({
 });
 
 const fakeAnalyzingLogs = ref([]);
+
+watch(
+    () => formData.value.processing.file || formData.value.processing.events,
+    (busy) => { appBusy.value = busy; },
+    { immediate: true, flush: 'sync' }
+);
+onUnmounted(() => { appBusy.value = false; });
 
 onMounted(async () => {
     await initGoogle(appSettings.GOOGLE_CLIENT_ID);

@@ -6,6 +6,8 @@
 # =====================================================================
 FROM node:22-alpine AS frontend
 
+ARG BUILD_COMMIT_SHA=locale
+
 WORKDIR /build
 
 COPY e2c-app/package.json e2c-app/package-lock.json ./

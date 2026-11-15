@@ -13,6 +13,9 @@ export default defineConfig(({ mode }) => {
         // in sviluppo locale gira sulla root.
         // VITE_BASE_PATH e' letto da .env.development / .env.production.
         base,
+        define: {
+            __APP_VERSION__: JSON.stringify((process.env.BUILD_COMMIT_SHA || 'locale').slice(0, 7)),
+        },
         plugins: [
             vue(),
             tailwindcss(),
