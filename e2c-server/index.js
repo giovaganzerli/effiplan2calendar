@@ -218,7 +218,10 @@ if (fs.existsSync(WEB_ROOT)) {
         express.static(WEB_ROOT, {
             index: false,
             setHeaders(res, filePath) {
-                if (filePath.endsWith("index.html") || filePath.endsWith("sw.js") || filePath.endsWith("manifest.webmanifest")) {
+                if (filePath.endsWith("sw.js") || filePath.endsWith("manifest.webmanifest")) {
+                    // Prevent CDN caches from delaying PWA updates.
+                    res.setHeader("Cache-Control", "no-store");
+                } else if (filePath.endsWith("index.html")) {
                     // L'index non deve mai restare in cache: punta al bundle con hash.
                     res.setHeader("Cache-Control", "no-cache");
                 } else {
