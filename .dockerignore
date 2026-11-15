@@ -1,0 +1,29 @@
+# Dipendenze: reinstallate dentro l'immagine.
+node_modules
+**/node_modules
+
+# Git
+.git
+.gitignore
+
+# Build locali (rigenerati dentro l'immagine)
+dist
+**/dist
+
+# Segreti: mai dentro l'immagine.
+.env
+**/.env
+.dev.vars
+**/.dev.vars
+
+# File di sviluppo locali
+.DS_Store
+**/.DS_Store
+.idea
+**/.idea
+.vscode
+**/.vscode
+
+# Documentazione e metadati non necessari a runtime
+*.md
+!README.md

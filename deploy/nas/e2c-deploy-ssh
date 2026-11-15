@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Forced command per la chiave SSH dedicata al deploy di Effiplan2Calendar.
+# Non valida mai input remoto: accetta solo i due comandi previsti.
+#
+#   deploy <commit-sha>   -> stdin: immagine Docker compressa con gzip
+#   set-env               -> stdin: "CHIAVE=valore" da scrivere in .env
+set -euo pipefail
+
+cmd="${SSH_ORIGINAL_COMMAND:-}"
+
+if [[ $cmd =~ ^deploy[[:space:]]+([0-9a-f]{40})$ ]]; then
+    exec sudo -n /usr/local/sbin/e2c-deploy "${BASH_REMATCH[1]}"
+fi
+
+if [[ $cmd == "set-env" ]]; then
+    exec sudo -n /usr/local/sbin/e2c-env-set
+fi
+
+echo 'Only "deploy <commit-sha>" and "set-env" are allowed.' >&2
+exit 1

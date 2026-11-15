@@ -2,21 +2,24 @@
     <div>
         <label class="block mb-2"><b>Your Calendar:</b></label>
 
-        <select v-model="selected" class="border p-2 rounded w-full" @change="onCalendarSelect(selected)" disabled>
+        <select v-model="selected" class="border p-2 rounded w-full" @change="onCalendarSelect(selected)">
             <option disabled value="">--</option>
             <option v-for="c in calendars" :key="c.id" :value="c.id">
                 {{ c.summary }}
             </option>
         </select>
+
+        <p v-if="error" class="mt-2 text-xs text-error">{{ error }}</p>
     </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { autoLoginGoogle, getToken } from "../services/google.service.js";
+import { autoLoginGoogle, getToken, getUserCalendars } from "../services/google.service.js";
 
 const selected = defineModel();
 const calendars = ref([]);
+const error = ref('');
 
 const emit = defineEmits(['on-selected'])
 
@@ -32,15 +35,14 @@ onMounted(async () => {
         }
     }
 
-    const res = await fetch(
-        "https://www.googleapis.com/calendar/v3/users/me/calendarList",
-        {
-            headers: { Authorization: `Bearer ${token}` }
-        }
-    );
+    if (!token) return;
 
-    const data = await res.json();
-    calendars.value = data.items || [];
+    try {
+        calendars.value = await getUserCalendars();
+    } catch (err) {
+        console.error("CalendarSelector: unable to load calendars:", err);
+        error.value = "Impossibile caricare i calendari.";
+    }
 });
 
 function onCalendarSelect() {

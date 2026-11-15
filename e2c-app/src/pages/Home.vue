@@ -254,6 +254,10 @@ import 'vue-json-pretty/lib/styles.css';
 
 const appSettings = {
     CALENDAR_NAME: 'EFFIPLAN',
+    // Client ID OAuth Google. Sostituirlo con quello del proprio progetto
+    // Google Cloud (var. d'ambiente VITE_GOOGLE_CLIENT_ID) e aggiungere
+    // l'origine autorizzata (https://decathlon.girovaganzo.bike/e2c).
+    GOOGLE_CLIENT_ID: import.meta.env.VITE_GOOGLE_CLIENT_ID || '584576150276-o3ruk12imhutt12c83q2gv5e54vn7690.apps.googleusercontent.com',
     CALENDAR_REMINDER: [
         { label: 'Default', value: 'default' },
         { label: 'Nessuna', value: 'none' },
@@ -292,7 +296,7 @@ const formData = ref({
 const fakeAnalyzingLogs = ref([]);
 
 onMounted(async () => {
-    await initGoogle("584576150276-o3ruk12imhutt12c83q2gv5e54vn7690.apps.googleusercontent.com");
+    await initGoogle(appSettings.GOOGLE_CLIENT_ID);
 });
 
 async function loginManual() {
@@ -396,7 +400,7 @@ function initData(type = []) {
 }
 
 function goToStep(n, init=false) {
-    if(formData.value.processing.file || formData.value.processing.file) return;
+    if(formData.value.processing.file || formData.value.processing.events) return;
 
     formData.value.step = n;
     if(init) initData(['file', 'processing', 'events', 'created']);
@@ -422,16 +426,25 @@ async function processingFile() {
     setTimeout(() => { fakeAnalyzingLogs.value.push('- Analisi in corso...'); }, 1500);
     setTimeout(() => { fakeAnalyzingLogs.value.push('- Cercando gli eventi...'); }, 2000);
 
-    formData.value.events = await parseImage(formData.value.file.obj);
+    try {
+        formData.value.events = await parseImage(formData.value.file.obj);
 
-    fakeAnalyzingLogs.value.push('- Eventi trovati!');;
-    setTimeout(() => { fakeAnalyzingLogs.value.push('- Creando l\'array...'); }, 500);
-    setTimeout(() => { fakeAnalyzingLogs.value.push('- Ci siamo quasi, ultimi ritocchi...'); }, 1000);
+        fakeAnalyzingLogs.value.push('- Eventi trovati!');
+        setTimeout(() => { fakeAnalyzingLogs.value.push('- Creando l\'array...'); }, 500);
+        setTimeout(() => { fakeAnalyzingLogs.value.push('- Ci siamo quasi, ultimi ritocchi...'); }, 1000);
 
-    setTimeout(() => {
-        fakeAnalyzingLogs.value = [];
+        setTimeout(() => {
+            fakeAnalyzingLogs.value = [];
+            formData.value.processing.file = false;
+        }, 1500);
+
+    } catch (err) {
+        console.error("Analisi IA fallita:", err);
+        formData.value.events = [];
         formData.value.processing.file = false;
-    }, 1500);
+        fakeAnalyzingLogs.value = [];
+        alert("Analisi IA fallita: " + err.message);
+    }
 }
 
 function removeEvent(i) {
@@ -522,10 +535,11 @@ function buildGoogleEvent(ev) {
         }
     };
 
-    if(!formData.value.calendar.reminders!=='none' && formData.value.calendar.reminders !== 'default') {
+    const reminders = formData.value.calendar.reminders;
+    if(reminders !== 'none' && reminders !== 'default') {
         _ev.reminders.overrides = [{
             method: "popup",
-            minutes: Number(formData.value.calendar.reminders)
+            minutes: Number(reminders)
         }];
     }
 

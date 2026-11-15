@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+# Deploy di Effiplan2Calendar sul NAS.
+# Installed as root-owned /usr/local/sbin/e2c-deploy.
+#
+# Riceve l'immagine Docker compressa con gzip su stdin (SSH), la carica,
+# estrae il codice applicativo in /var/www/decathlon/e2c e riavvia il servizio.
+set -euo pipefail
+umask 077
+
+[[ $EUID -eq 0 ]] || { echo 'Run through sudo on the NAS.' >&2; exit 1; }
+[[ $# -eq 1 && $1 =~ ^[0-9a-f]{40}$ ]] || { echo 'Expected a commit SHA.' >&2; exit 1; }
+
+ROOT="${E2C_ROOT:-/var/www/decathlon/e2c}"
+ENV_SET="${E2C_ENV_SET:-/usr/local/sbin/e2c-env-set}"
+SHA="$1"
+IMAGE="${E2C_IMAGE_NAME:-g96-e2c}:sha-$SHA"
+
+mkdir -p "$ROOT"
+cd "$ROOT"
+
+exec 9>"$ROOT/.deploy.lock"
+flock -n 9 || { echo 'Another deployment is running.' >&2; exit 1; }
+
+compose=(docker compose --project-directory "$ROOT" -f "$ROOT/docker-compose.yml")
+
+# ------------------------------------------------------------------
+# 1. Riceve l'immagine prima di toccare il servizio in esercizio.
+# ------------------------------------------------------------------
+gzip -dc | docker load
+docker image inspect "$IMAGE" >/dev/null
+
+# ------------------------------------------------------------------
+# 2. Backup dello stato precedente.
+# ------------------------------------------------------------------
+backup="$ROOT/deploy-backups/$(date -u +%Y%m%dT%H%M%SZ)-$SHA"
+mkdir -p "$backup"
+cp -p "$ROOT/docker-compose.yml" "$backup/docker-compose.yml"
+[[ -f "$ROOT/.env" ]] && cp -p "$ROOT/.env" "$backup/env"
+docker inspect g96_e2c --format '{{.Config.Image}}' >"$backup/previous-image" 2>/dev/null || true
+
+# ------------------------------------------------------------------
+# 3. Estrae il codice applicativo su disco: e' la copia che gira.
+# ------------------------------------------------------------------
+staging="$ROOT/.staging-$SHA"
+rm -rf "$staging"
+mkdir -p "$staging"
+
+container="$(docker create "$IMAGE")"
+cleanup() {
+    docker rm -f "$container" >/dev/null 2>&1 || true
+}
+trap cleanup EXIT
+
+docker cp "$container:/srv/app/web" "$staging/web"
+docker cp "$container:/srv/app/server" "$staging/server"
+docker cp "$container:/srv/app/src" "$staging/src"
+
+cleanup
+trap - EXIT
+
+test -f "$staging/web/index.html" || { echo 'Build del front-end mancante nell\'immagine.' >&2; exit 1; }
+test -f "$staging/server/index.js" || { echo 'Server mancante nell\'immagine.' >&2; exit 1; }
+
+# Sostituzione atomica delle directory servite dal container.
+rm -rf "$ROOT/web" "$ROOT/server" "$ROOT/src"
+mv "$staging/web" "$ROOT/web"
+mv "$staging/server" "$ROOT/server"
+mv "$staging/src" "$ROOT/src"
+rmdir "$staging"
+
+chown -R g96admin:www-data "$ROOT/web" "$ROOT/server" "$ROOT/src" 2>/dev/null || true
+
+# ------------------------------------------------------------------
+# 4. Punta il compose alla nuova immagine.
+# ------------------------------------------------------------------
+E2C_ENV_FILE="$ROOT/.env" "$ENV_SET" <<<"E2C_IMAGE=$IMAGE"
+
+# ------------------------------------------------------------------
+# 5. Riavvia e attende che il servizio sia davvero sano.
+# ------------------------------------------------------------------
+"${compose[@]}" up -d --no-build --wait --wait-timeout 180
+
+printf '%s\n' "$SHA" >"$ROOT/.deployed-commit"
+echo "Deployment complete: $IMAGE; backup: $backup"

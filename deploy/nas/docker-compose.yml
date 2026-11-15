@@ -1,0 +1,43 @@
+name: g96-e2c
+
+services:
+  e2c:
+    image: ${E2C_IMAGE:?E2C_IMAGE non impostata - il deploy script la scrive in .env}
+    container_name: g96_e2c
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      WEB_ROOT: /srv/app/web
+      TZ: Europe/Rome
+
+    # Solo in ascolto sul loopback: la pubblicazione la fa nginx.
+    ports:
+      - "127.0.0.1:3011:3000"
+
+    # Il codice applicativo vive in /var/www/decathlon/e2c e gira da li'.
+    volumes:
+      - /var/www/decathlon/e2c/web:/srv/app/web:ro
+      - /var/www/decathlon/e2c/server:/srv/app/server:ro
+
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+    mem_limit: 512m
+    cpus: 1.0
+    security_opt: ['no-new-privileges:true']
+    read_only: false
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Aggiorna (o crea) una singola chiave nel .env del progetto, preservando le altre.
+# Usato sia per GEMINI_API_KEY (dal secret GitHub) sia per E2C_IMAGE (dal deploy).
+set -euo pipefail
+umask 077
+
+[[ $EUID -eq 0 ]] || { echo 'Run through sudo on the NAS.' >&2; exit 1; }
+
+ENV_FILE="${E2C_ENV_FILE:-/var/www/decathlon/e2c/.env}"
+
+input="$(cat)"
+[[ "$input" =~ ^[A-Za-z_][A-Za-z0-9_]*= ]] || { echo 'Expected KEY=VALUE on stdin.' >&2; exit 1; }
+
+mkdir -p "$(dirname "$ENV_FILE")"
+touch "$ENV_FILE"
+chmod 600 "$ENV_FILE"
+
+python3 - "$ENV_FILE" "$input" <<'PY'
+import os
+import re
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+line = sys.argv[2]
+key = line.split("=", 1)[0]
+
+text = path.read_text() if path.exists() else ""
+pattern = rf"^\s*(?:export\s+)?{re.escape(key)}\s*=.*$"
+
+if re.search(pattern, text, flags=re.MULTILINE):
+    text = re.sub(pattern, line, text, flags=re.MULTILINE)
+else:
+    text = text.rstrip("\n") + "\n" + line + "\n"
+
+path.write_text(text)
+os.chmod(path, 0o600)
+PY
+
+echo "Updated $(basename "$ENV_FILE") key: ${input%%=*}"

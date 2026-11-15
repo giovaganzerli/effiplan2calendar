@@ -1,0 +1,139 @@
+# Deploy di Effiplan2Calendar sul NAS (g96-nas) via Docker + SSH.
+#
+# Flusso:
+#   1. build   -> compila l'immagine Docker (front-end Vite + server Express)
+#   2. deploy  -> il runner entra nella tailnet Tailscale, poi:
+#                   - scrive GEMINI_API_KEY in /var/www/decathlon/e2c/.env
+#                   - invia l'immagine compressa via SSH al NAS
+#                   - il NAS la carica, estrae il codice e riavvia il container
+#
+# Il NAS e' raggiungibile solo via Tailscale (tailnet-only), quindi il runner
+# deve essere nella tailnet: da qui l'action tailscale/github-action.
+#
+# Secret richiesti:
+#   TS_OAUTH_CLIENT_ID  - Tailscale OAuth client id   (https://tailscale.com/s/oauth-clients)
+#   TS_OAUTH_SECRET     - Tailscale OAuth client secret
+#   NAS_SSH_KEY         - chiave privata dedicata al deploy (non quella personale)
+#   GEMINI_API_KEY      - chiave API Gemini per il server
+
+name: Deploy to NAS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2c-deploy-nas
+  cancel-in-progress: false
+
+env:
+  # Nome MagicDNS della tailnet: e' quello che risolve il runner una volta
+  # collegato a Tailscale. (Il dominio pubblico "g96-nas.local" e' mDNS e
+  # non risolve su un runner Linux.)
+  NAS_HOST: g96-nas
+  NAS_USER: g96admin
+  IMAGE_NAME: g96-e2c
+
+jobs:
+  build:
+    name: Build image
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --build-arg BUILD_COMMIT_SHA="$GITHUB_SHA" \
+            --tag "${IMAGE_NAME}:sha-${GITHUB_SHA}" \
+            --tag "${IMAGE_NAME}:latest" \
+            .
+
+      - name: Export image
+        run: |
+          docker save "${IMAGE_NAME}:sha-${GITHUB_SHA}" | gzip -9 > image.tar.gz
+          ls -lh image.tar.gz
+
+      - name: Upload image
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: e2c-image-${{ github.sha }}
+          path: image.tar.gz
+          if-no-files-found: error
+          retention-days: 1
+
+  deploy:
+    name: Deploy to NAS
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Il NAS e' tailnet-only: senza questo passaggio l'SSH non arriva.
+      # Con OAuth client il nodo viene creato "ephemeral": sparisce a fine job.
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@064b10558093f38325e838ddea35486bdc6b1d5c # v4.4.0
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+          targets: ${{ env.NAS_HOST }}
+
+      - name: Setup SSH
+        env:
+          NAS_SSH_KEY: ${{ secrets.NAS_SSH_KEY }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$NAS_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          install -m 600 deploy/known_hosts ~/.ssh/known_hosts
+          ssh -o BatchMode=yes -o ConnectTimeout=15 "${NAS_USER}@${NAS_HOST}" true
+
+      - name: Download image
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: e2c-image-${{ github.sha }}
+
+      # La chiave Gemini arriva dal secret GitHub e finisce nel .env del NAS
+      # (mode 600, fuori dal git). Nessun segreto passa dall'immagine Docker.
+      - name: Set Gemini API key on NAS
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          printf 'GEMINI_API_KEY=%s\n' "$GEMINI_API_KEY" \
+            | ssh -o BatchMode=yes "${NAS_USER}@${NAS_HOST}" "set-env"
+
+      # L'immagine compressa viene inviata su stdin: il NAS fa "docker load".
+      - name: Deploy image to NAS
+        run: |
+          ssh -o BatchMode=yes "${NAS_USER}@${NAS_HOST}" "deploy ${GITHUB_SHA}" < image.tar.gz
+
+      - name: Health check
+        run: |
+          # Il dominio risolve gia' all'IP Tailscale, quindi e' raggiungibile
+          # dal runner ora che e' dentro la tailnet.
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
+            if curl -fsS --max-time 20 "https://decathlon.girovaganzo.bike/e2c/api/health"; then
+              echo "Deployment healthy."
+              exit 0
+            fi
+            echo "Health check attempt $attempt failed, retrying in 5s..."
+            sleep 5
+          done
+          echo "::error::Deployment did not become healthy."
+          exit 1

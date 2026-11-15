@@ -1,0 +1,7 @@
+# Copiare questo file in .dev.vars e inserire la chiave reale.
+# .dev.vars e' gitignorato.
+GEMINI_API_KEY=
+
+# Host di Cloudflare Image Delivery per il resize delle immagini (opzionale).
+# Esempio: imagedelivery.net/<ZONE_ID>
+IMAGEDELIVERY_HOST=

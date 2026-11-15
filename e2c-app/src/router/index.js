@@ -11,7 +11,8 @@ const routes = [
 ];
 
 const router = createRouter({
-    history: createWebHistory(),
+    // BASE_URL segue il `base` di Vite: '/' in sviluppo, '/e2c/' in produzione.
+    history: createWebHistory(import.meta.env.BASE_URL),
     routes,
 });
 

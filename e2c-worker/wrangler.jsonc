@@ -6,12 +6,20 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "e2c-worker",
 	"main": "src/index.js",
-	"compatibility_date": "2025-11-25",
+	"compatibility_date": "2025-09-06",
 	"observability": {
 		"enabled": true
 	},
-
 	"vars": {
-		"GEMINI_API_KEY": ""
+		// Elenco di modelli Gemini da tentare, in ordine.
+		// Il worker ripiega sul primo modello che risponde.
+		"GEMINI_MODEL": "gemini-3-flash-preview,gemini-3.8-flash,gemini-flash-latest"
 	}
+
+	// GEMINI_API_KEY non va messo qui: in questo file finirebbe nel
+	// repository. Usare `wrangler secret put GEMINI_API_KEY` per il
+	// deploy e il file .dev.vars (gitignorato) per lo sviluppo locale.
+	//
+	// IMAGEDELIVERY_HOST (opzionale) abilita il resize delle immagini
+	// tramite Cloudflare Image Delivery, es. "imagedelivery.net/<ZONE_ID>".
 }
