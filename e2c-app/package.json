@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "test:pwa": "npm run build && node --test test/pwa.test.js",
+    "test:pwa": "npm run build && node --test test/*.test.js",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -462,9 +462,7 @@ function addEvent() {
 }
 
 async function syncEvents() {
-
-    formData.value.processing.events = true;
-    goToStep(4);
+    if (formData.value.processing.file || formData.value.processing.events) return;
 
     const token = getToken();
 
@@ -482,6 +480,12 @@ async function syncEvents() {
     }
 
     const calId = calendar.id;
+
+    // Navigate before setting the busy flag: goToStep blocks user navigation
+    // while synchronization is running.
+    goToStep(4);
+    formData.value.processing.events = true;
+    initData(['created']);
 
     for (const ev of formData.value.events) {
         try {
