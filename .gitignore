@@ -174,3 +174,4 @@ deploy-backups/
 .deployed-commit
 *.tar.gz
 image.tar.gz
+.DS_Store
